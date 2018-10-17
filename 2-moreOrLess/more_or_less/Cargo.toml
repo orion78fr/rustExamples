@@ -1,6 +1,7 @@
 [package]
-name = "hello_cargo"
+name = "more_or_less"
 version = "0.1.0"
 authors = ["Turchini Guillaume <guillaume.turchini@gmail.com>"]
 
 [dependencies]
+rand = "0.5"
