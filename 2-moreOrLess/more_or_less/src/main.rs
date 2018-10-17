@@ -3,10 +3,14 @@ extern crate rand;
 use rand::Rng;
 use std::cmp::Ordering;
 use std::io;
-use std::io::Write; // Trait to get flush()
+// Trait to get flush()
+use std::io::Write;
+
+const EXIT_COMMAND: &str = "exit";
 
 fn main() {
     println!("Guess the secret number (between 0 and 100) !");
+    println!("Type \"{}\" to stop the game", EXIT_COMMAND);
 
     let secret_number = rand::thread_rng().gen_range(0, 101);
     // println!("The secret number is: {}", secret_number);
@@ -34,11 +38,20 @@ fn get_input_number() -> u32 {
         let mut guess = String::new();
 
         match io::stdin().read_line(&mut guess) {
-            Ok(_) => match guess.trim().parse() {
-                Ok(parsed_value) => {
-                    return parsed_value;
+            Ok(_) => {
+                let guess = guess.trim(); // Shadowing variable "guess"
+
+                if guess.eq_ignore_ascii_case(EXIT_COMMAND) {
+                    println!("Goodbye!");
+                    std::process::exit(0);
                 }
-                Err(e) => println!("\"{}\" is not a number : {}", guess.trim(), e)
+
+                match guess.parse() {
+                    Ok(parsed_value) => {
+                        return parsed_value;
+                    }
+                    Err(e) => println!("\"{}\" is not a valid number : {}", guess.trim(), e)
+                }
             }
             Err(e) => println!("Error : {}", e)
         }
