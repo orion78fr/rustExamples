@@ -1,6 +1,5 @@
 use Parity::{Odd, Even};
 use std::collections::HashMap;
-use std::cmp::Ordering;
 use std::io;
 use std::io::Write;
 
@@ -24,9 +23,7 @@ fn main() {
 
     let integer_list = integer_list_str.split_whitespace();
     integer_list.map(|x| -> i32 { x.parse().expect("Cannot parse as an integer") })
-        .for_each(|x| -> () {
-            vector.push(x);
-        });
+        .for_each(|x| { vector.push(x); });
 
     if vector.len() == 0 {
         panic!("The vector is empty");
@@ -56,17 +53,13 @@ fn main() {
     }
 
     let max_entry = occurrences.iter()
-        .max_by(|a, b| -> Ordering { a.1.cmp(b.1) })
+        .max_by(|a, b| { a.1.cmp(b.1) })
         .expect("Cannot find the max");
     println!("The mode is {} with {} occurences", max_entry.0, max_entry.1);
 }
 
 fn parity(i: i32) -> Parity {
-    if i % 2 == 0 {
-        return Even;
-    } else {
-        return Odd;
-    }
+    if i % 2 == 0 { Even } else { Odd }
 }
 
 enum Parity {
