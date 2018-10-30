@@ -46,7 +46,7 @@ fn get_input_number() -> u32 {
                 let guess = guess.trim(); // Shadowing variable "guess"
 
                 if guess.eq_ignore_ascii_case(EXIT_COMMAND) {
-                    println!("Goodbye!");
+                    println!("Goodbye !");
                     std::process::exit(0);
                 }
 
