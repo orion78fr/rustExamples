@@ -1,18 +1,18 @@
-pub struct Config {
-    text: String,
-    file: String,
+pub struct Config<'a> {
+    text: &'a str,
+    file: &'a str,
 }
 
-impl Config {
-    pub fn text(&self) -> String {
-        self.text.clone()
+impl<'a> Config<'a> {
+    pub fn text(&self) -> &str {
+        self.text
     }
-    pub fn file(&self) -> String {
-        self.file.clone()
+    pub fn file(&self) -> &str {
+        self.file
     }
 }
 
-pub fn parse_args(args: Vec<String>) -> Result<Config, String> {
+pub fn parse_args<'a>(args: &'a Vec<String>) -> Result<Config<'a>, String> {
     //eprintln!("Called with : {:?}", args);
 
     if args.len() != 3 {
@@ -21,11 +21,11 @@ pub fn parse_args(args: Vec<String>) -> Result<Config, String> {
     }
 
     return Ok(Config {
-        text: args[1].clone(),
-        file: args[2].clone(),
+        text: &args[1],
+        file: &args[2],
     });
 }
 
-fn show_usage(executable_name: &String) {
+fn show_usage(executable_name: &str) {
     eprintln!("Usage : {} <str_to_search> <file>", executable_name);
 }

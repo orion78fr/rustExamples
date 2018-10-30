@@ -10,10 +10,10 @@ pub fn search(conf: Config) {
     search_in_string(conf.text(), content);
 }
 
-fn search_in_string(text_to_search: String, file_content: String) {
+fn search_in_string(text_to_search: &str, file_content: String) {
     file_content.lines()
         .for_each(|line| {
-            if line.contains(text_to_search.as_str()) {
+            if line.contains(text_to_search) {
                 println!("{}", line);
             }
         });
