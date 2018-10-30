@@ -15,18 +15,22 @@ fn main() {
     let secret_number = rand::thread_rng().gen_range(0, 101);
     // println!("The secret number is: {}", secret_number);
 
+    let mut tries = 1;
+
     loop {
         let guess = get_input_number();
         // println!("You guessed : {}", guess);
 
         match guess.cmp(&secret_number) {
-            Ordering::Less => println!("It's bigger"),
-            Ordering::Greater => println!("It's smaller"),
+            Ordering::Less => println!("It's bigger."),
+            Ordering::Greater => println!("It's smaller."),
             Ordering::Equal => {
-                println!("You win!");
+                println!("You won in {} tries !", tries);
                 break;
             }
         }
+
+        tries += 1;
     }
 }
 
