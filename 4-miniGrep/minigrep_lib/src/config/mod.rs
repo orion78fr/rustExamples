@@ -1,17 +1,19 @@
 use std::env;
+use matcher::Matcher;
 
 pub struct Config<'a> {
-    text: &'a str,
-    file: &'a str,
-    debug: bool
+    matcher: Box<Matcher + 'a>,
+    files: Vec<&'a str>,
+    standard_input: bool,
+    debug: bool,
 }
 
 impl<'a> Config<'a> {
-    pub fn text(&self) -> &str {
-        self.text
+    pub fn match_text(&self, text_to_test: &str) -> bool {
+        self.matcher.match_text(text_to_test)
     }
-    pub fn file(&self) -> &str {
-        self.file
+    pub fn files(&self) -> &Vec<&'a str> {
+        &self.files
     }
     pub fn debug(&self) -> bool {
         self.debug
@@ -30,13 +32,16 @@ pub fn parse_args<'a>(args: &'a Vec<String>) -> Result<Config<'a>, String> {
         return Err(format!("Wrong number of arguments : expected 3, got 2"));
     }
 
-    let text = &args[1];
-    let file = &args[2];
+    let matcher = Matcher::of_text(&args[1]);
+
+    let mut files = Vec::new();
+    files.push(args[2].as_str());
 
     return Ok(Config {
-        text,
-        file,
+        matcher: Box::new(matcher),
+        files,
         debug,
+        standard_input: false,
     });
 }
 
