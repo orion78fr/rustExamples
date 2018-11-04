@@ -18,6 +18,7 @@ impl<'a> Config<'a> {
     pub fn debug(&self) -> bool {
         self.debug
     }
+    pub fn standard_input(&self) -> bool { self.standard_input }
 }
 
 pub fn parse_args<'a>(args: &'a Vec<String>) -> Result<Config<'a>, String> {
@@ -27,21 +28,49 @@ pub fn parse_args<'a>(args: &'a Vec<String>) -> Result<Config<'a>, String> {
         eprintln!("Called with : {:?}", args);
     }
 
-    if args.len() != 3 {
-        show_usage(&args[0]);
-        return Err(format!("Wrong number of arguments : expected 3, got 2"));
+    let mut inverted = false;
+    let mut regexp = false;
+    let mut text_to_match: Option<&str> = None;
+    let mut files = Vec::new();
+
+    for i in 1..args.len() {
+        match args[i].as_str() {
+            "-v" | "--inverted" => inverted = true,
+            "-g" | "--regexp" => regexp = true,
+            txt => match text_to_match {
+                None => text_to_match = Some(txt),
+                Some(_) => files.push(txt)
+            }
+        }
     }
 
-    let matcher = Matcher::of_text(&args[1]);
+    let mut matcher: Box<Matcher + 'a>;
 
-    let mut files = Vec::new();
-    files.push(args[2].as_str());
+    match text_to_match {
+        None => {
+            show_usage(&args[0]);
+            return Err("Missing argument".to_string());
+        }
+        Some(txt) => {
+            if regexp {
+                matcher = Box::new(Matcher::of_regex(txt))
+            } else {
+                matcher = Box::new(Matcher::of_text(txt))
+            }
+        }
+    }
+
+    if inverted {
+        matcher = Box::new(Matcher::not(matcher))
+    }
+
+    let standard_input = files.is_empty();
 
     return Ok(Config {
-        matcher: Box::new(matcher),
+        matcher,
         files,
         debug,
-        standard_input: false,
+        standard_input,
     });
 }
 

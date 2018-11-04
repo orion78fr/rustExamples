@@ -1,3 +1,5 @@
+extern crate regex;
+
 #[cfg(test)]
 mod tests;
 
